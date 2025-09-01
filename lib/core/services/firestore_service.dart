@@ -54,11 +54,6 @@ abstract class FirestoreService {
     }
   }
 
-  //TODO: CHANGE THIS ONE TO RETURN TASKMODEL EVENTUALLY
-  static Future<void> getTaskById(String taskId) {
-    return Future(() {});
-  }
-
   static Future<List<TaskModel>> getTasksByUserId({
     required bool isOwner,
   }) async {
@@ -111,5 +106,11 @@ abstract class FirestoreService {
         .update({
           "candidateIds": FieldValue.arrayRemove([developerID]),
         });
+  }
+
+  static Future<void> applyToCompany(String ownerID) async {
+    await _instance.collection(_collectionKey).doc(ownerID).update({
+      "candidateIds": FieldValue.arrayUnion([FirebaseAuthService.user!.uid]),
+    });
   }
 }

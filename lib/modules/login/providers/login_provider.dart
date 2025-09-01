@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:workin/core/services/firebase_auth_service.dart';
 
 class LoginProvider extends ChangeNotifier {
   late TextEditingController emailController;
@@ -47,15 +48,15 @@ class LoginProvider extends ChangeNotifier {
         password: passwordController.text,
       );
 
-      await FirestoreService.setCurrentPlayer(
-        PlayerModel(
-          name: nameController.text,
-          bestScore: 0,
-          totalAnswered: 0,
-          totalMistakes: 0,
-          imagePath: "",
-        ),
-      );
+      //await FirestoreService.setCurrentPlayer(
+      //  PlayerModel(
+      //    name: nameController.text,
+      //    bestScore: 0,
+      //    totalAnswered: 0,
+      //    totalMistakes: 0,
+      //    imagePath: "",
+      //  ),
+      //);
     } catch (e) {
       rethrow;
     }
@@ -67,9 +68,9 @@ class LoginProvider extends ChangeNotifier {
         email: emailController.text,
         password: passwordController.text,
       );
-      FirebaseAuthService.currentUser = await FirestoreService.getPlayerById(
-        FirebaseAuthService.user?.uid ?? '',
-      );
+      //FirebaseAuthService.currentUser = await FirestoreService.getPlayerById(
+      // FirebaseAuthService.user?.uid ?? '',
+      //);
     } catch (e) {
       rethrow;
     }

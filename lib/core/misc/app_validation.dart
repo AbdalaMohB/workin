@@ -1,10 +1,9 @@
 import 'package:get/get.dart';
-import 'package:intro_proj/localization/locale_keys.dart';
 
 abstract class AppValidation {
   static String? validateEmail(String? email) {
     if (email == null || email.trim().isEmpty) {
-      return LocaleKeys.emailError.tr;
+      return "Email Field is Required";
     }
     RegExp regExp = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
     bool matches = regExp.hasMatch(email);
@@ -16,7 +15,7 @@ abstract class AppValidation {
 
   static String? validatePassword(String? pass) {
     if (pass == null || pass.trim().isEmpty) {
-      return LocaleKeys.passwordError.tr;
+      return "Password Field is Required";
     }
     if (pass.trim().length < 8) {
       return "Password is too Short";
@@ -26,7 +25,7 @@ abstract class AppValidation {
 
   static String? validateUsername(String? name) {
     if (name == null || name.trim().isEmpty) {
-      return LocaleKeys.userNameError.tr;
+      return "User Name is Required";
     }
     return null;
   }

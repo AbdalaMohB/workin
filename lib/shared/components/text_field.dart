@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intro_proj/resources/app_colors.dart';
+import 'package:workin/shared/resources/app_colors.dart';
 
 String? _defaultValidator(String? input) {
   return null;
@@ -157,25 +157,6 @@ class TaskFormField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (0 == 5)
-            Text(
-              "Task",
-              style: GoogleFonts.roboto(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-          Padding(
-            padding: EdgeInsets.only(bottom: 15, top: 15),
-            child: Text(
-              "$title",
-              style: GoogleFonts.roboto(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
           InkWell(
             onTap: () async {
               if (!enable) {
@@ -207,12 +188,15 @@ class TaskFormField extends StatelessWidget {
                 hintStyle: GoogleFonts.roboto(
                   fontSize: 15,
                   fontWeight: !enable ? FontWeight.bold : FontWeight.normal,
-                  color: Colors.black,
+                  color: AppColors.secondaryFg,
                 ),
 
                 //label: Text("Title"),
               ),
-              style: GoogleFonts.roboto(fontSize: 15),
+              style: GoogleFonts.roboto(
+                fontSize: 15,
+                color: AppColors.trietaryFg,
+              ),
               maxLines: maxLines != null && maxLines! >= 1 ? maxLines : 1,
             ),
           ),
