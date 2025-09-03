@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:workin/core/misc/app_validation.dart';
 import 'package:workin/core/services/size_service.dart';
+import 'package:workin/modules/login/providers/login_provider.dart';
+import 'package:workin/shared/components/app_checkbox.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
 import 'package:workin/shared/components/text_field.dart';
 import 'package:workin/shared/resources/app_colors.dart';
-import 'package:workin/shared/resources/app_sizes.dart';
 
 Widget getFormButton({
   required void Function() onLogin,
@@ -51,22 +53,38 @@ Widget getFormButton({
   );
 }
 
-Widget _getUsernameField() {
+Widget _getUsernameField(TextEditingController usernameController) {
   return TaskFormField.basic(
     title: "Username",
     maxLines: 1,
+    controller: usernameController,
     validator: AppValidation.validateUsername,
     padding: EdgeInsets.symmetric(horizontal: 20),
     borderColor: AppColors.primaryFg,
   );
 }
 
-Widget getFormFields() {
+Widget _getCompanyNameField(TextEditingController controller) {
+  return TaskFormField.basic(
+    title: "Company Name",
+    maxLines: 1,
+    controller: controller,
+    validator: AppValidation.validateCompanyName,
+    padding: EdgeInsets.symmetric(horizontal: 20),
+    borderColor: AppColors.primaryFg,
+  );
+}
+
+Widget getFormFields(
+  TextEditingController emailController,
+  TextEditingController passwordController,
+) {
   return Column(
     children: [
       TaskFormField.basic(
         title: "Email",
         maxLines: 1,
+        controller: emailController,
         validator: AppValidation.validateEmail,
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         borderColor: AppColors.primaryFg,
@@ -74,6 +92,7 @@ Widget getFormFields() {
       TaskFormField.password(
         title: "Password",
         maxLines: 1,
+        controller: passwordController,
         validator: AppValidation.validatePassword,
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         borderColor: AppColors.primaryFg,
@@ -82,11 +101,8 @@ Widget getFormFields() {
   );
 }
 
-Dialog getRegistrationDialog({
-  required void Function() onTrueRegister,
-  required BuildContext context,
-}) {
-  double dimension = SizeService.getWidthPercentage(context, percentage: 0.6);
+Dialog getRegistrationDialog({required BuildContext context}) {
+  double dimension = SizeService.getWidthPercentage(context, percentage: 1);
   return Dialog(
     constraints: BoxConstraints(maxHeight: dimension),
     backgroundColor: AppColors.primaryBg,
@@ -94,15 +110,27 @@ Dialog getRegistrationDialog({
       side: BorderSide(color: AppColors.primaryFg, width: 3),
       borderRadius: BorderRadiusGeometry.circular(15),
     ),
-    child: _getDialogBody(
-      onTrueRegister: onTrueRegister,
-      verticalSpace: dimension / 9,
+    child: Consumer<LoginProvider>(
+      builder: (c, provider, child) {
+        return _getDialogBody(
+          provider: provider,
+          onTrueRegister: () {
+            if (provider.isOwner) {
+              provider.register(c);
+            } else {
+              provider.toNextRegistrationStep(c);
+            }
+          },
+          verticalSpace: dimension / 9,
+        );
+      },
     ),
   );
 }
 
 Widget _getDialogBody({
   required void Function() onTrueRegister,
+  required LoginProvider provider,
   double? verticalSpace,
 }) {
   return Column(
@@ -115,7 +143,18 @@ Widget _getDialogBody({
           style: TextStyle(color: AppColors.primaryFg),
         ),
       ),
-      _getUsernameField(),
+      _getUsernameField(provider.nameController),
+      AppCheckbox(
+        padding: EdgeInsets.only(top: 15, left: 15, right: 15),
+        onChange: provider.ownerCheck,
+        initState: provider.isOwner,
+        label: Text(
+          "Are You a Company Owner?",
+          style: TextStyle(color: AppColors.primaryFg),
+        ),
+        checkedColor: AppColors.primaryFg,
+      ),
+      if (provider.isOwner) _getCompanyNameField(provider.companyName),
       expandedHorizontal(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: MaterialButton(
@@ -136,9 +175,11 @@ Widget _getDialogBody({
 List<Widget> getLoginForm({
   required void Function() onLogin,
   required void Function() onRegister,
+  required TextEditingController emailController,
+  required TextEditingController passwordController,
 }) {
   return [
-    getFormFields(),
+    getFormFields(emailController, passwordController),
     getFormButton(onLogin: onLogin, onRegister: onRegister),
   ];
 }

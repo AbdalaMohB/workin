@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workin/core/services/firebase_auth_service.dart';
+import 'package:workin/modules/home/screens/home_screen_base.dart';
 import 'package:workin/modules/login/screens/login_screen.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -10,10 +11,10 @@ class LandingScreen extends StatelessWidget {
       stream: FirebaseAuthService.getAuthStream(),
       builder: (c, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: Text("unfinished"));
+          return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
           FirebaseAuthService.user = snapshot.data;
-          return Center(child: Text("unfinished"));
+          return HomeScreenBase();
         } else {
           return LoginScreen();
         }

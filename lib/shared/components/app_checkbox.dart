@@ -9,12 +9,15 @@ class AppCheckbox extends StatefulWidget {
 
   final EdgeInsets padding;
 
+  final Color checkedColor;
+
   AppCheckbox._initial({
     super.key,
     required this.label,
     required this.initialState,
     required this.onChange,
     required this.padding,
+    required this.checkedColor,
   });
 
   AppCheckbox({
@@ -23,12 +26,14 @@ class AppCheckbox extends StatefulWidget {
     required Function(bool? value) onChange,
     bool initState = false,
     EdgeInsets padding = EdgeInsets.zero,
+    Color checkedColor = Colors.purple,
   }) : this._initial(
          key: key,
          label: label,
          initialState: initState,
          onChange: onChange,
          padding: padding,
+         checkedColor: checkedColor,
        );
 
   @override
@@ -65,9 +70,11 @@ class _AppCheckboxState extends State<AppCheckbox> {
               child: Checkbox(
                 value: widget.initialState,
                 onChanged: null,
+                hoverColor: Colors.white,
                 fillColor: WidgetStateProperty.resolveWith((v) {
-                  if (v.contains(WidgetState.selected))
-                    return Colors.deepPurple;
+                  if (v.contains(WidgetState.selected)) {
+                    return widget.checkedColor;
+                  }
                   return Colors.white;
                 }),
               ),

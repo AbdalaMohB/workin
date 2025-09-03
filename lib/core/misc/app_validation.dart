@@ -29,4 +29,20 @@ abstract class AppValidation {
     }
     return null;
   }
+
+  static String? validateCompanyName(String? name) {
+    if (name == null || name.trim().isEmpty) {
+      return "Company Name is Required";
+    }
+    return null;
+  }
+
+  static String? validateNumber(String? number) {
+    RegExp regExp = RegExp("^[0-9]*\$");
+    bool matches = regExp.hasMatch(number ?? "");
+    if (!matches) {
+      return "Please Enter a Valid Number";
+    }
+    return null;
+  }
 }

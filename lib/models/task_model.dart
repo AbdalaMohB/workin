@@ -7,7 +7,6 @@ class TaskModel {
     required this.name,
     required this.desc,
     required this.developerID,
-    required this.ownerID,
   });
 
   TaskModel.fromJson(Map<String, dynamic> json) {

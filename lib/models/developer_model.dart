@@ -4,7 +4,6 @@ class DeveloperModel extends UserModel {
   late String job;
   late int yearsOfExperience;
   late String? cv;
-  late List<String> employedBy;
 
   DeveloperModel._internal({
     required super.name,
@@ -13,7 +12,6 @@ class DeveloperModel extends UserModel {
     required this.cv,
     required super.monthlyRate,
     required super.hourlyRate,
-    required this.employedBy,
     super.isOwner = false,
   });
   DeveloperModel.partTime({
@@ -30,7 +28,6 @@ class DeveloperModel extends UserModel {
          cv: cv,
          monthlyRate: null,
          hourlyRate: hourlyRate,
-         employedBy: employedBy ?? [],
        );
   DeveloperModel({
     required String name,
@@ -47,18 +44,12 @@ class DeveloperModel extends UserModel {
          cv: cv,
          monthlyRate: monthlyRate,
          hourlyRate: null,
-         employedBy: employedBy ?? [],
        );
   DeveloperModel.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     if (json.containsKey('cv')) {
       cv = json['cv'];
     } else {
       cv = null;
-    }
-    if (json.containsKey('employedBy')) {
-      employedBy = json['employedBy'];
-    } else {
-      employedBy = [];
     }
     job = json['job'];
     yearsOfExperience = json['yearsOfExperience'];
@@ -70,7 +61,6 @@ class DeveloperModel extends UserModel {
     data['job'] = job;
     data['cv'] = cv;
     data['yearsOfExperience'] = yearsOfExperience;
-    data['employedBy'] = employedBy;
     return data;
   }
 }

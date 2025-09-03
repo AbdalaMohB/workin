@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workin/firebase_options.dart';
+import 'package:workin/modules/landing/screens/landing_screen.dart';
 import 'package:workin/modules/login/providers/login_provider.dart';
-import 'package:workin/modules/login/screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +23,7 @@ class App extends StatelessWidget {
           },
         ),
       ],
-      child: MaterialApp(home: LoginScreen()),
+      child: MaterialApp(home: LandingScreen()),
     );
   }
 }

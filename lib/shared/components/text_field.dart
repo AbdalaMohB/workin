@@ -177,6 +177,12 @@ class TaskFormField extends StatelessWidget {
               decoration: InputDecoration(
                 prefixIcon: prefixIcon,
                 border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: AppColors.secondaryFg,
+                    width: 1,
+                  ),
+                ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: borderColor, width: 2),
                 ),
@@ -188,7 +194,7 @@ class TaskFormField extends StatelessWidget {
                 hintStyle: GoogleFonts.roboto(
                   fontSize: 15,
                   fontWeight: !enable ? FontWeight.bold : FontWeight.normal,
-                  color: AppColors.secondaryFg,
+                  color: AppColors.secondaryText,
                 ),
 
                 //label: Text("Title"),
