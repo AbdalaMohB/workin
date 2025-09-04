@@ -30,6 +30,13 @@ abstract class AppValidation {
     return null;
   }
 
+  static String? validateJobName(String? name) {
+    if (name == null || name.trim().isEmpty) {
+      return "Job Title is Required";
+    }
+    return null;
+  }
+
   static String? validateCompanyName(String? name) {
     if (name == null || name.trim().isEmpty) {
       return "Company Name is Required";
@@ -42,6 +49,9 @@ abstract class AppValidation {
     bool matches = regExp.hasMatch(number ?? "");
     if (!matches) {
       return "Please Enter a Valid Number";
+    }
+    if (number == null || number.trim().isEmpty) {
+      return "Please Provide a Number";
     }
     return null;
   }

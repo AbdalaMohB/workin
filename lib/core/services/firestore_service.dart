@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:workin/core/services/firebase_auth_service.dart';
 import 'package:workin/models/developer_model.dart';
+import 'package:workin/models/job_model.dart';
 import 'package:workin/models/job_poster_model.dart';
 import 'package:workin/models/manager_model.dart';
 import 'package:workin/models/task_model.dart';
@@ -56,6 +57,16 @@ abstract class FirestoreService {
     } catch (e) {
       rethrow;
     }
+  }
+
+  static Future<List<ManagerModel>> getManagersByDevID(String userId) async {
+    final response = await _instance
+        .collection(_managerCollectionKey)
+        .where("managedEmployeeIDsWithJob.$userId", isGreaterThan: '')
+        .get();
+    return response.docs.map((managers) {
+      return ManagerModel.fromJson(managers.data());
+    }).toList();
   }
 
   static Future<List<TaskModel>> getTasksByUserId({
@@ -121,7 +132,7 @@ abstract class FirestoreService {
     }
   }
 
-  static Future<void> createNewJobPost(String jobName) async {
+  static Future<void> createNewJobPost(JobModel job) async {
     try {
       await _instance
           .collection(_jobCollectionKey)
@@ -129,7 +140,7 @@ abstract class FirestoreService {
             JobPosterModel(
               ownerID: FirebaseAuthService.user?.uid ?? "",
               applicantIDs: [],
-              jobName: jobName,
+              job: job,
             ).toJson(),
           );
     } catch (e) {
@@ -155,7 +166,6 @@ abstract class FirestoreService {
           .collection(_jobCollectionKey)
           .doc(jobID)
           .get();
-      final String jobName = response.data()?['jobName'];
       await _instance.collection(_jobCollectionKey).doc(jobID).delete();
 
       //.update({
@@ -165,7 +175,9 @@ abstract class FirestoreService {
       await _instance
           .collection(_managerCollectionKey)
           .doc(FirebaseAuthService.user?.uid ?? "invalidOwnerId")
-          .update({"managedEmployeeIDsWithJob.$developerID": jobName});
+          .update({
+            "managedEmployeeIDsWithJob.$developerID": response.data()?['job'],
+          });
     } catch (e) {
       rethrow;
     }

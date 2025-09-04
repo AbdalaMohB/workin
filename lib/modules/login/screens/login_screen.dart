@@ -66,41 +66,56 @@ class LoginScreen extends StatelessWidget {
                 _appTitle(),
                 _slogan(),
               ] +
-              getLoginForm(
-                emailController: provider.emailController,
-                passwordController: provider.passwordController,
-                onLogin: provider.login,
-                onRegister: () {
-                  if (provider.formIsValid()) {
-                    showGeneralDialog(
-                      context: context,
-                      transitionBuilder: (c, a1, a2, widget) {
-                        const begin = Offset(-1, 0);
-                        const end = Offset.zero;
-                        const curve = Curves.easeOutCubic;
-                        final tween = Tween(begin: begin, end: end);
-                        final curvedAnimation = CurvedAnimation(
-                          parent: a1,
-                          curve: curve,
-                        );
-                        return SlideTransition(
-                          position: tween.animate(curvedAnimation),
-                          child: Opacity(
-                            opacity: a1.value,
-                            child: getRegistrationDialog(context: context),
-                          ),
-                        );
-                      },
-                      barrierDismissible: true,
-                      barrierLabel: "",
-                      transitionDuration: Duration(milliseconds: 900),
-                      pageBuilder: (c, a1, a2) {
-                        return Center();
-                      },
-                    );
-                  }
-                },
-              ),
+              [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.secondaryBg,
+                      borderRadius: BorderRadiusGeometry.circular(10),
+                    ),
+                    child: Column(
+                      children: getLoginForm(
+                        emailController: provider.emailController,
+                        passwordController: provider.passwordController,
+                        onLogin: provider.login,
+                        onRegister: () {
+                          if (provider.formIsValid()) {
+                            showGeneralDialog(
+                              context: context,
+                              transitionBuilder: (c, a1, a2, widget) {
+                                const begin = Offset(-1, 0);
+                                const end = Offset.zero;
+                                const curve = Curves.easeOutCubic;
+                                final tween = Tween(begin: begin, end: end);
+                                final curvedAnimation = CurvedAnimation(
+                                  parent: a1,
+                                  curve: curve,
+                                );
+                                return SlideTransition(
+                                  position: tween.animate(curvedAnimation),
+                                  child: Opacity(
+                                    opacity: a1.value,
+                                    child: getRegistrationDialog(
+                                      context: context,
+                                    ),
+                                  ),
+                                );
+                              },
+                              barrierDismissible: true,
+                              barrierLabel: "",
+                              transitionDuration: Duration(milliseconds: 900),
+                              pageBuilder: (c, a1, a2) {
+                                return Center();
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
         ),
       ),
     );

@@ -16,25 +16,29 @@ class CustomNavbar extends StatefulWidget {
 
 class _CustomNavbarState extends State<CustomNavbar> {
   final List<BottomNavigationBarItem> _items = const [
-    BottomNavigationBarItem(label: '', icon: Icon(Icons.home)),
-    BottomNavigationBarItem(label: '', icon: Icon(Icons.task)),
+    BottomNavigationBarItem(label: 'Job Posts', icon: Icon(Icons.work)),
+    BottomNavigationBarItem(label: 'Tasks', icon: Icon(Icons.task)),
+    BottomNavigationBarItem(label: 'Employees', icon: Icon(Icons.person)),
   ];
 
   int currentIdx = 0;
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      items: _items,
-      currentIndex: currentIdx,
-      backgroundColor: AppColors.primaryBg,
-      selectedItemColor: AppColors.primaryFg,
-      unselectedItemColor: AppColors.secondaryFg,
-      onTap: (idx) {
-        setState(() {
-          currentIdx = idx;
-          widget.onTabChange(idx);
-        });
-      },
+    return Theme(
+      data: Theme.of(context).copyWith(splashColor: Colors.white24),
+      child: BottomNavigationBar(
+        items: _items,
+        currentIndex: currentIdx,
+        backgroundColor: AppColors.primaryBg,
+        selectedItemColor: AppColors.primaryFg,
+        unselectedItemColor: AppColors.secondaryFg,
+        onTap: (idx) {
+          setState(() {
+            currentIdx = idx;
+            widget.onTabChange(idx);
+          });
+        },
+      ),
     );
   }
 }

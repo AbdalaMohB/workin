@@ -1,18 +1,26 @@
+import 'package:workin/models/job_model.dart';
+
 class ManagerModel {
-  late Map<String, String> managedEmployeeIDsWithJobs;
+  late Map<String, JobModel> managedEmployeeIDsWithJobs;
 
   ManagerModel({this.managedEmployeeIDsWithJobs = const {}});
 
   ManagerModel.fromJson(Map<String, dynamic> json) {
-    if (!json.containsKey("managedEmployeeIDsWithJobs")) {
-      managedEmployeeIDsWithJobs = {};
+    managedEmployeeIDsWithJobs = {};
+    for (String key in json['managedEmployeeIDsWithJobs'].keys) {
+      managedEmployeeIDsWithJobs[key] = JobModel.fromJson(
+        json['managedEmployeeIDsWithJob'][key],
+      );
     }
-    managedEmployeeIDsWithJobs = json['managedEmployeeIDsWithJobs'];
   }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {};
-    data['managedEmployeeIDsWithJobs'] = managedEmployeeIDsWithJobs;
+    data['managedEmployeeIDsWithJob'] = {};
+    for (String key in managedEmployeeIDsWithJobs.keys) {
+      data['managedEmployeeIDsWithJob'][key] = managedEmployeeIDsWithJobs[key]
+          ?.toJson();
+    }
     return data;
   }
 }

@@ -17,6 +17,8 @@ class LoginProvider extends ChangeNotifier {
   late bool isPartTime;
   late bool isOwner;
   late GlobalKey<FormState> globalKey;
+  late GlobalKey<FormState> dialogKey;
+  late GlobalKey<FormState> extraKey;
   late int currentRegistrationStep;
   SnackBar getErrorBar({required Widget content}) {
     return SnackBar(
@@ -28,6 +30,8 @@ class LoginProvider extends ChangeNotifier {
 
   void init() {
     globalKey = GlobalKey();
+    dialogKey = GlobalKey();
+    extraKey = GlobalKey();
     isOwner = false;
     currentRegistrationStep = 0;
     _initControllers();
@@ -66,47 +70,51 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> register(BuildContext context) async {
-    if (formIsValid()) {
-      try {
+  Future<void> register(BuildContext context, {bool patch = false}) async {
+    try {
+      if (!patch) {
         Navigator.pop(context);
-        await FirebaseAuthService.signUpViaEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        );
-
-        UserModel user;
-        if (isOwner) {
-          user = OwnerModel(
-            companyName: companyName.text,
-            name: nameController.text,
-          );
-        } else {
-          if (isPartTime) {
-            user = DeveloperModel.partTime(
-              name: nameController.text,
-              job: job.text,
-              yearsOfExperience: int.parse(yearsOfExperience.text),
-              hourlyRate: int.parse(rate.text),
-            );
-          } else {
-            user = DeveloperModel(
-              name: nameController.text,
-              yearsOfExperience: int.parse(yearsOfExperience.text),
-              job: job.text,
-              monthlyRate: int.parse(rate.text),
-              cv: cv.text,
-            );
-          }
-        }
-
-        await FirestoreService.setCurrentUser(user);
-        if (isOwner) {
-          await FirestoreService.createManagerProfile();
-        }
-      } catch (e) {
-        rethrow;
       }
+      await FirebaseAuthService.signUpViaEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      UserModel user;
+      if (isOwner) {
+        user = OwnerModel(
+          companyName: companyName.text,
+          name: nameController.text,
+        );
+      } else {
+        user = DeveloperModel(
+          name: nameController.text,
+          yearsOfExperience: int.parse(yearsOfExperience.text.trim()),
+          job: job.text,
+          cv: cv.text,
+        );
+      }
+
+      await FirestoreService.setCurrentUser(user);
+      if (isOwner) {
+        await FirestoreService.createManagerProfile();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> loginPatch() async {
+    try {
+      await FirebaseAuthService.signInViaEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      FirebaseAuthService.currentUser = await FirestoreService.getUserById(
+        FirebaseAuthService.user?.uid ?? '',
+      );
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -126,6 +134,12 @@ class LoginProvider extends ChangeNotifier {
     }
   }
 
+  void registerDev(BuildContext context) {
+    if (extraFormIsValid()) {
+      register(context, patch: true);
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -134,6 +148,14 @@ class LoginProvider extends ChangeNotifier {
 
   bool formIsValid() {
     return globalKey.currentState!.validate();
+  }
+
+  bool formIsCompletelyValid() {
+    return formIsValid() && dialogKey.currentState!.validate();
+  }
+
+  bool extraFormIsValid() {
+    return extraKey.currentState!.validate();
   }
 
   Future<void> submitForm(BuildContext context) async {

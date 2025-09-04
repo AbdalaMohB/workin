@@ -21,15 +21,15 @@ Widget getFormButton({
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 28),
           child: MaterialButton(
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: AppColors.primaryFg, width: 2),
+              side: BorderSide(color: AppColors.primaryFg, width: 1),
               borderRadius: BorderRadiusGeometry.circular(15),
             ),
             onPressed: onRegister,
-            color: AppColors.primaryBg,
-            splashColor: AppColors.primaryFg,
+            color: AppColors.primaryFg,
+            splashColor: AppColors.splash,
             child: Text(
               "Register",
-              style: TextStyle(color: AppColors.primaryFg),
+              style: TextStyle(color: AppColors.secondaryBg),
             ),
           ),
         ),
@@ -39,13 +39,16 @@ Widget getFormButton({
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 28),
           child: MaterialButton(
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: AppColors.primaryFg, width: 2),
+              side: BorderSide(color: AppColors.primaryFg, width: 1),
               borderRadius: BorderRadiusGeometry.circular(15),
             ),
             onPressed: onLogin,
-            color: AppColors.primaryBg,
-            splashColor: AppColors.primaryFg,
-            child: Text("Login", style: TextStyle(color: AppColors.primaryFg)),
+            color: AppColors.primaryFg,
+            splashColor: AppColors.splash,
+            child: Text(
+              "Login",
+              style: TextStyle(color: AppColors.secondaryBg),
+            ),
           ),
         ),
       ),
@@ -86,7 +89,7 @@ Widget getFormFields(
         maxLines: 1,
         controller: emailController,
         validator: AppValidation.validateEmail,
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         borderColor: AppColors.primaryFg,
       ),
       TaskFormField.password(
@@ -94,7 +97,7 @@ Widget getFormFields(
         maxLines: 1,
         controller: passwordController,
         validator: AppValidation.validatePassword,
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         borderColor: AppColors.primaryFg,
       ),
     ],
@@ -107,21 +110,26 @@ Dialog getRegistrationDialog({required BuildContext context}) {
     constraints: BoxConstraints(maxHeight: dimension),
     backgroundColor: AppColors.primaryBg,
     shape: RoundedRectangleBorder(
-      side: BorderSide(color: AppColors.primaryFg, width: 3),
+      side: BorderSide(color: AppColors.primaryFg, width: 1),
       borderRadius: BorderRadiusGeometry.circular(15),
     ),
     child: Consumer<LoginProvider>(
       builder: (c, provider, child) {
-        return _getDialogBody(
-          provider: provider,
-          onTrueRegister: () {
-            if (provider.isOwner) {
-              provider.register(c);
-            } else {
-              provider.toNextRegistrationStep(c);
-            }
-          },
-          verticalSpace: dimension / 9,
+        return Form(
+          key: provider.dialogKey,
+          child: _getDialogBody(
+            provider: provider,
+            onTrueRegister: () {
+              if (provider.formIsCompletelyValid()) {
+                if (provider.isOwner) {
+                  provider.register(c);
+                } else {
+                  provider.toNextRegistrationStep(c);
+                }
+              }
+            },
+            verticalSpace: dimension / 9,
+          ),
         );
       },
     ),
@@ -159,13 +167,13 @@ Widget _getDialogBody({
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: MaterialButton(
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: AppColors.primaryFg, width: 2),
+            side: BorderSide(color: AppColors.primaryFg, width: 1),
             borderRadius: BorderRadiusGeometry.circular(15),
           ),
           onPressed: onTrueRegister,
-          color: AppColors.primaryBg,
-          splashColor: AppColors.primaryFg,
-          child: Text("Submit", style: TextStyle(color: AppColors.primaryFg)),
+          color: AppColors.primaryFg,
+          splashColor: AppColors.splash,
+          child: Text("Submit", style: TextStyle(color: AppColors.primaryBg)),
         ),
       ),
     ],

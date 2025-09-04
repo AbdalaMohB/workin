@@ -22,7 +22,7 @@ class TaskFormField extends StatelessWidget {
   final String? value;
   final TextEditingController? controller;
   final String? Function(String? input) validator;
-
+  final TextInputType keyboard;
   final Color borderColor;
 
   //private constructor for setting all data
@@ -39,6 +39,7 @@ class TaskFormField extends StatelessWidget {
     required this.validator,
     required this.isObscured,
     required this.borderColor,
+    required this.keyboard,
   });
 
   //named constructor for specific situations
@@ -54,6 +55,7 @@ class TaskFormField extends StatelessWidget {
     String? Function(String? input) validator = _defaultValidator,
     EdgeInsets padding = EdgeInsets.zero,
     Color borderColor = Colors.blue,
+    TextInputType keyboard = TextInputType.text,
   }) : this._internal(
          key: key,
          title: title,
@@ -67,6 +69,7 @@ class TaskFormField extends StatelessWidget {
          padding: padding,
          isObscured: false,
          borderColor: borderColor,
+         keyboard: keyboard,
        );
   const TaskFormField.password({
     Key? key,
@@ -80,6 +83,7 @@ class TaskFormField extends StatelessWidget {
     String? Function(String? input) validator = _defaultValidator,
     EdgeInsets padding = EdgeInsets.zero,
     Color borderColor = Colors.blue,
+    TextInputType keyboard = TextInputType.text,
   }) : this._internal(
          key: key,
          title: title,
@@ -93,6 +97,7 @@ class TaskFormField extends StatelessWidget {
          padding: padding,
          isObscured: true,
          borderColor: borderColor,
+         keyboard: keyboard,
        );
 
   const TaskFormField.selectDate({
@@ -120,6 +125,7 @@ class TaskFormField extends StatelessWidget {
          padding: padding,
          isObscured: false,
          borderColor: borderColor,
+         keyboard: TextInputType.text,
        );
 
   //normal constructor (gives user choice)
@@ -135,6 +141,7 @@ class TaskFormField extends StatelessWidget {
     String? Function(String? input) validator = _defaultValidator,
     EdgeInsets padding = EdgeInsets.zero,
     Color borderColor = Colors.blue,
+    TextInputType keyboard = TextInputType.text,
   }) : this._internal(
          key: key,
          title: title,
@@ -148,6 +155,7 @@ class TaskFormField extends StatelessWidget {
          padding: padding,
          isObscured: false,
          borderColor: borderColor,
+         keyboard: keyboard,
        );
 
   @override
@@ -174,16 +182,17 @@ class TaskFormField extends StatelessWidget {
               controller: controller,
               obscuringCharacter: obscuringCharacter,
               obscureText: isObscured,
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 prefixIcon: prefixIcon,
-                border: OutlineInputBorder(),
-                enabledBorder: OutlineInputBorder(
+                border: UnderlineInputBorder(),
+                enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
                     color: AppColors.secondaryFg,
                     width: 1,
                   ),
                 ),
-                focusedBorder: OutlineInputBorder(
+                focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: borderColor, width: 2),
                 ),
                 contentPadding: EdgeInsets.symmetric(

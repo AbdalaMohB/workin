@@ -1,7 +1,7 @@
 class UserModel {
   late String name;
-  int? monthlyRate;
-  int? hourlyRate;
+  double? monthlyRate;
+  double? hourlyRate;
   late bool isOwner;
   UserModel({
     required this.name,
