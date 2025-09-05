@@ -104,20 +104,6 @@ class LoginProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> loginPatch() async {
-    try {
-      await FirebaseAuthService.signInViaEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      FirebaseAuthService.currentUser = await FirestoreService.getUserById(
-        FirebaseAuthService.user?.uid ?? '',
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   Future<void> login() async {
     if (formIsValid()) {
       try {

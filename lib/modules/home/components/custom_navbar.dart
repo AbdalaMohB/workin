@@ -5,8 +5,13 @@ import 'package:workin/shared/resources/app_colors.dart';
 
 class CustomNavbar extends StatefulWidget {
   final void Function(int idx) onTabChange;
+  final bool isOwner;
 
-  const CustomNavbar({super.key, required this.onTabChange});
+  const CustomNavbar({
+    super.key,
+    required this.onTabChange,
+    required this.isOwner,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +32,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
     return Theme(
       data: Theme.of(context).copyWith(splashColor: Colors.white24),
       child: BottomNavigationBar(
-        items: _items,
+        items: widget.isOwner ? _items : _items.sublist(0, 2),
         currentIndex: currentIdx,
         backgroundColor: AppColors.primaryBg,
         selectedItemColor: AppColors.primaryFg,
@@ -51,6 +56,10 @@ AppBar getCustomAppBar() {
         FirebaseAuthService.signOut();
       },
       child: getAvatar(),
+    ),
+    title: Text(
+      FirebaseAuthService.currentUser?.name ?? "hello",
+      style: TextStyle(color: AppColors.secondaryFg),
     ),
     backgroundColor: AppColors.primaryBg,
   );

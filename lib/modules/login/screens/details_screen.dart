@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:workin/core/misc/app_validation.dart';
+import 'package:workin/core/services/size_service.dart';
 import 'package:workin/modules/login/providers/login_provider.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
+import 'package:workin/shared/components/custom_spacer.dart';
 import 'package:workin/shared/components/text_field.dart';
 import 'package:workin/shared/resources/app_colors.dart';
 
@@ -38,9 +40,12 @@ class DetailsScreen extends StatelessWidget {
   }
 
   Widget _hint() {
-    return Text(
-      "Just one last step. Please provide the following information:",
-      style: TextStyle(color: AppColors.primaryFg, fontSize: 15),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      child: Text(
+        "Just one last step. Please provide the following information:",
+        style: TextStyle(color: AppColors.primaryFg, fontSize: 20),
+      ),
     );
   }
 
@@ -65,18 +70,46 @@ class DetailsScreen extends StatelessWidget {
       builder: (cont, provider, _) {
         return Form(
           key: provider.extraKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children:
-                  [_hint()] +
-                  _getFormFields(provider) +
-                  [
-                    _submitButton(() {
-                      provider.registerDev(cont);
-                    }),
-                  ],
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:
+                    [
+                      customSpacer(
+                        verticalSpace: SizeService.getHeightPercentage(
+                          cont,
+                          percentage: 0.15,
+                        ),
+                      ),
+                      _hint(),
+                    ] +
+                    [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 15,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.secondaryBg,
+                            borderRadius: BorderRadiusGeometry.circular(15),
+                          ),
+
+                          child: Column(
+                            children:
+                                _getFormFields(provider) +
+                                [
+                                  _submitButton(() {
+                                    provider.registerDev(cont);
+                                  }),
+                                ],
+                          ),
+                        ),
+                      ),
+                    ],
+              ),
             ),
           ),
         );

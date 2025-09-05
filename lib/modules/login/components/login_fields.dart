@@ -6,6 +6,7 @@ import 'package:workin/core/services/size_service.dart';
 import 'package:workin/modules/login/providers/login_provider.dart';
 import 'package:workin/shared/components/app_checkbox.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
+import 'package:workin/shared/components/custom_spacer.dart';
 import 'package:workin/shared/components/text_field.dart';
 import 'package:workin/shared/resources/app_colors.dart';
 
@@ -108,9 +109,8 @@ Dialog getRegistrationDialog({required BuildContext context}) {
   double dimension = SizeService.getWidthPercentage(context, percentage: 1);
   return Dialog(
     constraints: BoxConstraints(maxHeight: dimension),
-    backgroundColor: AppColors.primaryBg,
+    backgroundColor: AppColors.trietaryBg,
     shape: RoundedRectangleBorder(
-      side: BorderSide(color: AppColors.primaryFg, width: 1),
       borderRadius: BorderRadiusGeometry.circular(15),
     ),
     child: Consumer<LoginProvider>(
@@ -142,10 +142,10 @@ Widget _getDialogBody({
   double? verticalSpace,
 }) {
   return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
       Padding(
-        padding: EdgeInsets.symmetric(vertical: verticalSpace ?? 0),
+        padding: EdgeInsets.only(top: verticalSpace ?? 0),
         child: Text(
           "Please Enter Your New Username",
           style: TextStyle(color: AppColors.primaryFg),
@@ -153,7 +153,7 @@ Widget _getDialogBody({
       ),
       _getUsernameField(provider.nameController),
       AppCheckbox(
-        padding: EdgeInsets.only(top: 15, left: 15, right: 15),
+        padding: EdgeInsets.only(left: 15, right: 15),
         onChange: provider.ownerCheck,
         initState: provider.isOwner,
         label: Text(
@@ -162,9 +162,10 @@ Widget _getDialogBody({
         ),
         checkedColor: AppColors.primaryFg,
       ),
+
       if (provider.isOwner) _getCompanyNameField(provider.companyName),
       expandedHorizontal(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         child: MaterialButton(
           shape: RoundedRectangleBorder(
             side: BorderSide(color: AppColors.primaryFg, width: 1),

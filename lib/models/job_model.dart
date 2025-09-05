@@ -7,6 +7,7 @@ class JobModel {
     required this.jobName,
     required this.rate,
     required this.isFullTime,
+    this.jobDesc = "",
   });
 
   JobModel.fromJson(Map<String, dynamic> json) {
