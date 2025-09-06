@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:workin/core/services/firebase_auth_service.dart';
 import 'package:workin/modules/home/components/avatar.dart';
 import 'package:workin/shared/resources/app_colors.dart';
+import 'package:workin/shared/resources/app_text_styles.dart';
 
 class CustomNavbar extends StatefulWidget {
   final void Function(int idx) onTabChange;
@@ -48,7 +49,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
   }
 }
 
-AppBar getCustomAppBar() {
+AppBar getCustomAppBar({String trailing = ""}) {
   return AppBar(
     leading: InkWell(
       splashColor: AppColors.secondaryFg,
@@ -58,9 +59,15 @@ AppBar getCustomAppBar() {
       child: getAvatar(),
     ),
     title: Text(
-      FirebaseAuthService.currentUser?.name ?? "hello",
+      FirebaseAuthService.currentUser?.name ?? "___",
       style: TextStyle(color: AppColors.secondaryFg),
     ),
     backgroundColor: AppColors.primaryBg,
+    actions: [
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 30),
+        child: Text(trailing, style: AppTextStyles.normal),
+      ),
+    ],
   );
 }

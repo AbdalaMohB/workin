@@ -26,7 +26,10 @@ class HomeScreenJobPosts extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return EmployeePickerScreen(applicantIDs: post.applicantIDs);
+                  return EmployeePickerScreen(
+                    applicantIDs: post.applicantIDs,
+                    jobID: post.jobID,
+                  );
                 },
               ),
             );

@@ -7,7 +7,7 @@ class ManagerModel {
 
   ManagerModel.fromJson(Map<String, dynamic> json) {
     managedEmployeeIDsWithJobs = {};
-    for (String key in json['managedEmployeeIDsWithJobs'].keys) {
+    for (String key in json['managedEmployeeIDsWithJob'].keys) {
       managedEmployeeIDsWithJobs[key] = JobModel.fromJson(
         json['managedEmployeeIDsWithJob'][key],
       );

@@ -54,7 +54,7 @@ class HomeScreenBase extends StatelessWidget {
           ),
           floatingActionButton: _fab(cont, provider),
 
-          appBar: getCustomAppBar(),
+          appBar: getCustomAppBar(trailing: provider.rate ?? ""),
           body: _body(provider),
         );
       },

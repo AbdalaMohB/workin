@@ -14,6 +14,7 @@ class HomeProvider extends ChangeNotifier {
   late TextEditingController jobNameController;
   late TextEditingController jobDescController;
   late TextEditingController jobRateController;
+  String? rate;
 
   void toggleFullTime(bool? val) {
     isJobFullTime = val ?? false;
@@ -50,6 +51,10 @@ class HomeProvider extends ChangeNotifier {
     FirebaseAuthService.currentUser = await FirestoreService.getUserById(
       FirebaseAuthService.user?.uid ?? "",
     );
+    if (!(FirebaseAuthService.currentUser?.isOwner ?? true)) {
+      final payment = await FirestoreService.getCurrentRate();
+      rate = "\$${payment[true]}/M : \$${payment[false]}/H";
+    }
   }
 
   Future<void> postJob(JobModel job) async {

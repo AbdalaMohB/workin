@@ -169,6 +169,43 @@ abstract class FirestoreService {
     }
   }
 
+  static Future<Map<bool, double>> getCurrentRate() async {
+    try {
+      final response = await _instance
+          .collection(_managerCollectionKey)
+          .where(
+            "managedEmployeeIDsWithJob.${FirebaseAuthService.user?.uid ?? "Invalid User ID"}",
+            isNotEqualTo: "",
+          )
+          .get();
+      Map<bool, double> jobsWithIDs = {true: 0, false: 0};
+      List<ManagerModel> md = response.docs.map((m) {
+        return ManagerModel.fromJson(m.data());
+      }).toList();
+      for (ManagerModel m in md) {
+        JobModel? relevantJobs =
+            m.managedEmployeeIDsWithJobs[FirebaseAuthService.user?.uid ??
+                "Invalid User"];
+        if (relevantJobs == null) {
+          continue;
+        }
+
+        jobsWithIDs.update(
+          relevantJobs.isFullTime,
+          (value) {
+            return value + relevantJobs.rate;
+          },
+          ifAbsent: () {
+            return 0;
+          },
+        );
+      }
+      return jobsWithIDs;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<void> acceptCandidateDeveloper(
     String developerID,
     String jobID,

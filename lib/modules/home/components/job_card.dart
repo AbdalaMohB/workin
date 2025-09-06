@@ -60,7 +60,6 @@ class _JobCardState extends State<JobCard> {
                 Row(
                   //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(backgroundColor: AppColors.primaryFg),
                     customSpacer(horizontalSpace: 15),
                     Text(
                       widget.jobPost.job.jobName,

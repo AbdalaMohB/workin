@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:workin/core/services/firebase_auth_service.dart';
 import 'package:workin/core/services/size_service.dart';
 import 'package:workin/models/developer_model.dart';
-import 'package:workin/models/job_poster_model.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
 import 'package:workin/shared/components/custom_spacer.dart';
 import 'package:workin/shared/resources/app_colors.dart';
@@ -11,12 +9,13 @@ import 'package:workin/shared/resources/app_text_styles.dart';
 class EmployeeCard extends StatefulWidget {
   final DeveloperModel employee;
   late bool _isEmployeesTab;
-
-  EmployeeCard({super.key, required this.employee}) {
+  late Future<void> Function() onApply;
+  EmployeeCard({super.key, required this.employee, required this.onApply}) {
     _isEmployeesTab = false;
   }
   EmployeeCard.employeeTab({super.key, required this.employee}) {
     _isEmployeesTab = true;
+    onApply = () async {};
   }
 
   @override
@@ -54,10 +53,13 @@ class _EmployeeCardState extends State<EmployeeCard> {
                     customSpacer(horizontalSpace: 15),
                     Text(widget.employee.name, style: AppTextStyles.header),
                     Spacer(),
-                    IconButton(
-                      onPressed: () async {},
-                      icon: Icon(Icons.thumb_up, color: AppColors.primaryFg),
-                    ),
+                    if (!widget._isEmployeesTab)
+                      IconButton(
+                        onPressed: () async {
+                          widget.onApply();
+                        },
+                        icon: Icon(Icons.thumb_up, color: AppColors.primaryFg),
+                      ),
                   ],
                 ),
                 customSpacer(

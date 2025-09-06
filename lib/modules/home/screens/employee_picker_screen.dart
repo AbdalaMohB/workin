@@ -8,12 +8,27 @@ import 'package:workin/shared/resources/app_text_styles.dart';
 
 class EmployeePickerScreen extends StatelessWidget {
   final List<String> applicantIDs;
-  const EmployeePickerScreen({super.key, required this.applicantIDs});
+  final String jobID;
+  const EmployeePickerScreen({
+    super.key,
+    required this.applicantIDs,
+    required this.jobID,
+  });
 
-  List<Widget> _builder(EmployeeProvider provider) {
+  List<Widget> _builder(BuildContext context, EmployeeProvider provider) {
     List<Widget> items = [];
+    int index = -1;
     for (DeveloperModel dev in provider.employees) {
-      items.add(EmployeeCard(employee: dev));
+      items.add(
+        EmployeeCard(
+          employee: dev,
+          onApply: () async {
+            await provider.acceptApplicant(applicantIDs[index], jobID, index);
+            Navigator.pop(context);
+          },
+        ),
+      );
+      index += 1;
     }
     return items;
   }
@@ -25,10 +40,15 @@ class EmployeePickerScreen extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         }
         if (provider.employees.isEmpty) {
-          return Center(child: Text("No Data", style: AppTextStyles.normal));
+          return Center(
+            child: Text(
+              "No applicants for this job",
+              style: AppTextStyles.normal,
+            ),
+          );
         }
         return SingleChildScrollView(
-          child: Column(children: _builder(provider)),
+          child: Column(children: _builder(context, provider)),
         );
       },
     );
