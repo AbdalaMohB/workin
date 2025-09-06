@@ -15,9 +15,30 @@ class HomeScreenBase extends StatelessWidget {
       return Center(child: CircularProgressIndicator());
     }
     if (provider.currentTab == 0) {
-      return HomeScreenJobPosts(jobPosters: provider.posts);
+      return HomeScreenJobPosts(
+        jobPosters: provider.posts,
+        onApply: provider.applyToJob,
+        onUnapply: provider.cancelJob,
+      );
     }
     return unfinishedMessage("Everything");
+  }
+
+  Widget? _fab(BuildContext context, HomeProvider provider) {
+    if (FirebaseAuthService.currentUser?.isOwner ?? false) {
+      return provider.currentTab < 2
+          ? FloatingActionButton(
+              onPressed: () {
+                provider.showDialog(context);
+              },
+              backgroundColor: AppColors.primaryFg,
+              splashColor: AppColors.splash,
+              shape: CircleBorder(),
+              child: Icon(Icons.add),
+            )
+          : null;
+    }
+    return null;
   }
 
   @override
@@ -31,17 +52,8 @@ class HomeScreenBase extends StatelessWidget {
             onTabChange: provider.onTabChange,
             isOwner: FirebaseAuthService.currentUser?.isOwner ?? false,
           ),
-          floatingActionButton: provider.currentTab < 2
-              ? FloatingActionButton(
-                  onPressed: () {
-                    provider.showDialog(context);
-                  },
-                  backgroundColor: AppColors.primaryFg,
-                  splashColor: AppColors.splash,
-                  shape: CircleBorder(),
-                  child: Icon(Icons.add),
-                )
-              : null,
+          floatingActionButton: _fab(cont, provider),
+
           appBar: getCustomAppBar(),
           body: _body(provider),
         );

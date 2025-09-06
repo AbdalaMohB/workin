@@ -1,21 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:workin/models/job_poster_model.dart';
 import 'package:workin/modules/home/components/job_card.dart';
+import 'package:workin/modules/home/screens/employee_picker_screen.dart';
 import 'package:workin/shared/resources/app_text_styles.dart';
 
 class HomeScreenJobPosts extends StatelessWidget {
   final List<JobPosterModel> jobPosters;
-  const HomeScreenJobPosts({super.key, required this.jobPosters});
-  List<Widget> _builder() {
+  final Future<void> Function(String id) onApply;
+  final Future<void> Function(String id) onUnapply;
+  const HomeScreenJobPosts({
+    super.key,
+    required this.jobPosters,
+    required this.onApply,
+    required this.onUnapply,
+  });
+  List<Widget> _builder(BuildContext context) {
     List<Widget> posters = [];
     for (JobPosterModel post in jobPosters) {
       posters.add(
         JobCard(
           jobPost: post,
-          posterName: "You",
-          onTap: () {},
+          posterName: post.ownerName ?? "You",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return EmployeePickerScreen(applicantIDs: post.applicantIDs);
+                },
+              ),
+            );
+          },
           onApply: () async {
-            await Future.delayed(Duration(seconds: 1));
+            await onApply(post.jobID);
+          },
+          onUnapply: () async {
+            await onUnapply(post.jobID);
           },
         ),
       );
@@ -35,7 +55,7 @@ class HomeScreenJobPosts extends StatelessWidget {
         mainAxisAlignment: jobPosters.isEmpty
             ? MainAxisAlignment.center
             : MainAxisAlignment.start,
-        children: _builder(),
+        children: _builder(context),
       ),
     );
   }

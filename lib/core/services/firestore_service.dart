@@ -48,6 +48,19 @@ abstract class FirestoreService {
     }
   }
 
+  static Future<DeveloperModel?> getEmplById(String userId) async {
+    try {
+      final response = await _instance
+          .collection(_collectionKey)
+          .doc(userId)
+          .get();
+      final DeveloperModel user = DeveloperModel.fromJson(response.data()!);
+      return user;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<void> updateUserById(String userId, UserModel user) async {
     try {
       await _instance
@@ -100,8 +113,9 @@ abstract class FirestoreService {
   static Future<List<DeveloperModel>> getDevsById(List<String> IDs) async {
     final List<DeveloperModel> users = [];
     for (String id in IDs) {
-      final DeveloperModel dev = await getUserById(id) as DeveloperModel;
-      users.add(dev);
+      UserModel dev =
+          await getEmplById(id) ?? UserModel(name: "", isOwner: false);
+      users.add(DeveloperModel.fromJson(dev.toJson()));
     }
 
     return users;
@@ -164,18 +178,18 @@ abstract class FirestoreService {
           .collection(_jobCollectionKey)
           .doc(jobID)
           .get();
-      await _instance.collection(_jobCollectionKey).doc(jobID).delete();
-
-      //.update({
-      // "applicantIDs": FieldValue.arrayRemove([developerID]),
-      //});
-
       await _instance
           .collection(_managerCollectionKey)
           .doc(FirebaseAuthService.user?.uid ?? "invalidOwnerId")
           .update({
             "managedEmployeeIDsWithJob.$developerID": response.data()?['job'],
           });
+
+      await _instance.collection(_jobCollectionKey).doc(jobID).delete();
+
+      //.update({
+      // "applicantIDs": FieldValue.arrayRemove([developerID]),
+      //});
     } catch (e) {
       rethrow;
     }
@@ -183,16 +197,27 @@ abstract class FirestoreService {
 
   static Future<List<JobPosterModel>> getJobs() async {
     final response = await _instance.collection(_jobCollectionKey).get();
-    return response.docs.map((job) {
+    List<JobPosterModel> posters = response.docs.map((job) {
       JobPosterModel j = JobPosterModel.fromJson(job.data());
       j.jobID = job.reference.path.split("/").last;
       return j;
     }).toList();
+    for (var i = 0; i < posters.length; i++) {
+      posters[i].ownerName =
+          (await getUserById(posters[i].ownerID))?.name ?? "";
+    }
+    return posters;
   }
 
   static Future<void> applyToJob(String jobID) async {
     await _instance.collection(_jobCollectionKey).doc(jobID).update({
       "applicantIDs": FieldValue.arrayUnion([FirebaseAuthService.user!.uid]),
+    });
+  }
+
+  static Future<void> cancelJob(String jobID) async {
+    await _instance.collection(_jobCollectionKey).doc(jobID).update({
+      "applicantIDs": FieldValue.arrayRemove([FirebaseAuthService.user!.uid]),
     });
   }
 }

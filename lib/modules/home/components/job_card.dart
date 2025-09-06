@@ -12,12 +12,14 @@ class JobCard extends StatefulWidget {
   final String posterName;
   final void Function() onTap;
   final Future<void> Function() onApply;
+  final Future<void> Function() onUnapply;
   const JobCard({
     super.key,
     required this.jobPost,
     required this.posterName,
     required this.onTap,
     required this.onApply,
+    required this.onUnapply,
   });
   @override
   State<StatefulWidget> createState() {
@@ -27,13 +29,16 @@ class JobCard extends StatefulWidget {
 
 class _JobCardState extends State<JobCard> {
   late bool _isDeveloper;
-  bool _applied = false;
+  bool _applied = true;
 
   @override
   void initState() {
     super.initState();
     _isDeveloper =
         (FirebaseAuthService.user?.uid ?? "") != widget.jobPost.ownerID;
+    _applied = widget.jobPost.applicantIDs.contains(
+      FirebaseAuthService.user?.uid ?? "",
+    );
   }
 
   @override
@@ -65,13 +70,17 @@ class _JobCardState extends State<JobCard> {
                     if (_isDeveloper)
                       IconButton(
                         onPressed: () async {
-                          await widget.onApply();
+                          if (!_applied) {
+                            await widget.onApply();
+                          } else {
+                            await widget.onUnapply();
+                          }
                           setState(() {
                             _applied = !_applied;
                           });
                         },
                         icon: Icon(
-                          _applied ? Icons.thumb_down : Icons.thumb_up,
+                          _applied ? Icons.check_rounded : Icons.thumb_up,
                           color: AppColors.primaryFg,
                         ),
                       ),

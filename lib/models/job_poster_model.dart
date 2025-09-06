@@ -5,7 +5,7 @@ class JobPosterModel {
   late String ownerID;
   late List<String> applicantIDs;
   late JobModel job;
-
+  String? ownerName;
   JobPosterModel({
     required this.ownerID,
     required this.applicantIDs,

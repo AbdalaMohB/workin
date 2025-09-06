@@ -61,7 +61,11 @@ class HomeProvider extends ChangeNotifier {
 
   Future<void> _initPosts() async {
     try {
-      posts = await FirestoreService.getPostedJobs();
+      if (FirebaseAuthService.currentUser?.isOwner ?? false) {
+        posts = await FirestoreService.getPostedJobs();
+      } else {
+        posts = await FirestoreService.getJobs();
+      }
     } catch (e) {
       posts = [];
     }
@@ -88,6 +92,14 @@ class HomeProvider extends ChangeNotifier {
     await Future.wait([_getUser(), _initPosts()]);
     isLoading = false;
     notifyListeners();
+  }
+
+  Future<void> applyToJob(String jobID) async {
+    await FirestoreService.applyToJob(jobID);
+  }
+
+  Future<void> cancelJob(String jobID) async {
+    await FirestoreService.cancelJob(jobID);
   }
 
   @override

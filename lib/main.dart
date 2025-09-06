@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workin/firebase_options.dart';
+import 'package:workin/modules/home/providers/employee_provider.dart';
+import 'package:workin/modules/home/providers/home_provider.dart';
 import 'package:workin/modules/landing/screens/landing_screen.dart';
 import 'package:workin/modules/login/providers/login_provider.dart';
 
@@ -20,6 +22,16 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             return LoginProvider();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            return HomeProvider();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            return EmployeeProvider();
           },
         ),
       ],
