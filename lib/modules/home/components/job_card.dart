@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workin/core/services/firebase_auth_service.dart';
 import 'package:workin/core/services/size_service.dart';
 import 'package:workin/models/job_poster_model.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
@@ -25,7 +26,16 @@ class JobCard extends StatefulWidget {
 }
 
 class _JobCardState extends State<JobCard> {
+  late bool _isDeveloper;
   bool _applied = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isDeveloper =
+        (FirebaseAuthService.user?.uid ?? "") != widget.jobPost.ownerID;
+  }
+
   @override
   Widget build(BuildContext context) {
     return expandedHorizontal(
@@ -49,18 +59,19 @@ class _JobCardState extends State<JobCard> {
                       widget.jobPost.job.jobName,
                       style: AppTextStyles.header,
                     ),
-                    IconButton(
-                      onPressed: () async {
-                        await widget.onApply();
-                        setState(() {
-                          _applied = !_applied;
-                        });
-                      },
-                      icon: Icon(
-                        _applied ? Icons.thumb_down : Icons.thumb_up,
-                        color: AppColors.primaryFg,
+                    if (_isDeveloper)
+                      IconButton(
+                        onPressed: () async {
+                          await widget.onApply();
+                          setState(() {
+                            _applied = !_applied;
+                          });
+                        },
+                        icon: Icon(
+                          _applied ? Icons.thumb_down : Icons.thumb_up,
+                          color: AppColors.primaryFg,
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 customSpacer(

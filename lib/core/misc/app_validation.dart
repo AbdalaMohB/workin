@@ -30,6 +30,13 @@ abstract class AppValidation {
     return null;
   }
 
+  static String? validateDesc(String? name) {
+    if (name != null && name.trim().length < 8) {
+      return "Description too short";
+    }
+    return null;
+  }
+
   static String? validateJobName(String? name) {
     if (name == null || name.trim().isEmpty) {
       return "Job Title is Required";

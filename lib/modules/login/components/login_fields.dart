@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workin/core/misc/app_validation.dart';
@@ -6,7 +5,6 @@ import 'package:workin/core/services/size_service.dart';
 import 'package:workin/modules/login/providers/login_provider.dart';
 import 'package:workin/shared/components/app_checkbox.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
-import 'package:workin/shared/components/custom_spacer.dart';
 import 'package:workin/shared/components/text_field.dart';
 import 'package:workin/shared/resources/app_colors.dart';
 
@@ -23,7 +21,7 @@ Widget getFormButton({
           child: MaterialButton(
             shape: RoundedRectangleBorder(
               side: BorderSide(color: AppColors.primaryFg, width: 1),
-              borderRadius: BorderRadiusGeometry.circular(15),
+              borderRadius: BorderRadiusGeometry.circular(10),
             ),
             onPressed: onRegister,
             color: AppColors.primaryFg,
@@ -41,7 +39,7 @@ Widget getFormButton({
           child: MaterialButton(
             shape: RoundedRectangleBorder(
               side: BorderSide(color: AppColors.primaryFg, width: 1),
-              borderRadius: BorderRadiusGeometry.circular(15),
+              borderRadius: BorderRadiusGeometry.circular(10),
             ),
             onPressed: onLogin,
             color: AppColors.primaryFg,
@@ -109,7 +107,7 @@ Dialog getRegistrationDialog({required BuildContext context}) {
   double dimension = SizeService.getWidthPercentage(context, percentage: 1);
   return Dialog(
     constraints: BoxConstraints(maxHeight: dimension),
-    backgroundColor: AppColors.trietaryBg,
+    backgroundColor: AppColors.secondaryBg,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadiusGeometry.circular(15),
     ),

@@ -24,13 +24,24 @@ class HomeScreenBase extends StatelessWidget {
   Widget build(BuildContext context) {
     context.read<HomeProvider>().init();
     return Consumer<HomeProvider>(
-      builder: (_, provider, _) {
+      builder: (cont, provider, _) {
         return Scaffold(
           backgroundColor: AppColors.primaryBg,
           bottomNavigationBar: CustomNavbar(
             onTabChange: provider.onTabChange,
             isOwner: FirebaseAuthService.currentUser?.isOwner ?? false,
           ),
+          floatingActionButton: provider.currentTab < 2
+              ? FloatingActionButton(
+                  onPressed: () {
+                    provider.showDialog(context);
+                  },
+                  backgroundColor: AppColors.primaryFg,
+                  splashColor: AppColors.splash,
+                  shape: CircleBorder(),
+                  child: Icon(Icons.add),
+                )
+              : null,
           appBar: getCustomAppBar(),
           body: _body(provider),
         );

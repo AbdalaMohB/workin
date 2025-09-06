@@ -3,10 +3,13 @@ class TaskModel {
   late String desc;
   late String ownerID;
   late String developerID;
+  late bool isCached;
   TaskModel({
+    required this.ownerID,
     required this.name,
     required this.desc,
     required this.developerID,
+    this.isCached = false,
   });
 
   TaskModel.fromJson(Map<String, dynamic> json) {

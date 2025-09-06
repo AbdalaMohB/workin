@@ -58,7 +58,7 @@ class DetailsScreen extends StatelessWidget {
         onPressed: onClick,
         shape: RoundedRectangleBorder(
           side: BorderSide(color: AppColors.primaryFg, width: 1),
-          borderRadius: BorderRadiusGeometry.circular(20),
+          borderRadius: BorderRadiusGeometry.circular(10),
         ),
         child: Text("Submit", style: TextStyle(color: AppColors.primaryBg)),
       ),

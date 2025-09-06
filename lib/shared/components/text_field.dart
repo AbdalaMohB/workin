@@ -184,17 +184,18 @@ class TaskFormField extends StatelessWidget {
               obscureText: isObscured,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
+                fillColor: AppColors.trietaryBg,
+                filled: true,
                 prefixIcon: prefixIcon,
-                border: UnderlineInputBorder(),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: AppColors.secondaryFg,
-                    width: 1,
-                  ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(width: 0),
                 ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: borderColor, width: 2),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(width: 2, color: AppColors.fadedFg),
                 ),
+
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 10,
                   vertical: 10,
