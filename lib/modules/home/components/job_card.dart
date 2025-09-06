@@ -53,12 +53,15 @@ class _JobCardState extends State<JobCard> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    CircleAvatar(backgroundColor: AppColors.primaryFg),
+                    customSpacer(horizontalSpace: 15),
                     Text(
                       widget.jobPost.job.jobName,
                       style: AppTextStyles.header,
                     ),
+                    Spacer(),
                     if (_isDeveloper)
                       IconButton(
                         onPressed: () async {
@@ -80,7 +83,7 @@ class _JobCardState extends State<JobCard> {
                     percentage: 0.02,
                   ),
                 ),
-                Text("By: ${widget.posterName}", style: AppTextStyles.normal),
+                Text("From ${widget.posterName}", style: AppTextStyles.normal),
                 Text(
                   "Pay: \$${widget.jobPost.job.rate}/${widget.jobPost.job.isFullTime ? "M" : "H"}",
                   style: AppTextStyles.normal,

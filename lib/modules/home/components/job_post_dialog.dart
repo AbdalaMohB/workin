@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workin/core/misc/app_validation.dart';
 import 'package:workin/core/services/size_service.dart';
+import 'package:workin/models/job_model.dart';
 import 'package:workin/modules/home/providers/home_provider.dart';
 import 'package:workin/shared/components/app_checkbox.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
-import 'package:workin/shared/components/custom_spacer.dart';
 import 'package:workin/shared/components/text_field.dart';
 import 'package:workin/shared/resources/app_colors.dart';
 import 'package:workin/shared/resources/app_text_styles.dart';
@@ -27,12 +27,14 @@ Widget _getFormBody(BuildContext context, HomeProvider provider) {
         ),
         TaskFormField.basic(
           title: "Job Name",
+          controller: provider.jobNameController,
           validator: AppValidation.validateJobName,
           maxLines: 1,
           padding: EdgeInsets.symmetric(horizontal: 15),
         ),
         TaskFormField.basic(
           title: "Job Desc",
+          controller: provider.jobDescController,
           validator: AppValidation.validateDesc,
           maxLines: 3,
           padding: EdgeInsets.symmetric(horizontal: 15),
@@ -40,6 +42,7 @@ Widget _getFormBody(BuildContext context, HomeProvider provider) {
         TaskFormField.basic(
           title: "Rate per ${provider.isJobFullTime ? "Month" : "Hour"}",
           validator: AppValidation.validateNumber,
+          controller: provider.jobRateController,
           maxLines: 1,
           padding: EdgeInsets.symmetric(horizontal: 15),
         ),
@@ -57,8 +60,16 @@ Widget _getFormBody(BuildContext context, HomeProvider provider) {
               borderRadius: BorderRadiusGeometry.circular(10),
             ),
             onPressed: () async {
-              Navigator.pop(context);
-              //provider.postJob(job)
+              if (provider.dialogFormKey.currentState!.validate()) {
+                Navigator.pop(context);
+                JobModel job = JobModel(
+                  jobName: provider.jobNameController.text,
+                  jobDesc: provider.jobDescController.text,
+                  rate: double.parse(provider.jobRateController.text.trim()),
+                  isFullTime: provider.isJobFullTime,
+                );
+                provider.postJob(job);
+              }
             },
             color: AppColors.primaryFg,
             child: Text("Post"),

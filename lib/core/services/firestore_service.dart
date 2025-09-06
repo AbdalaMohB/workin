@@ -112,7 +112,7 @@ abstract class FirestoreService {
         .collection(_jobCollectionKey)
         .where(
           "ownerID",
-          arrayContains: FirebaseAuthService.user?.uid ?? "invalidOwnerId",
+          isEqualTo: FirebaseAuthService.user?.uid ?? "invalidOwnerId",
         )
         .get();
     final List<JobPosterModel> jobs = response.docs.map((devs) {
@@ -132,17 +132,15 @@ abstract class FirestoreService {
     }
   }
 
-  static Future<void> createNewJobPost(JobModel job) async {
+  static Future<JobPosterModel> createNewJobPost(JobModel job) async {
     try {
-      await _instance
-          .collection(_jobCollectionKey)
-          .add(
-            JobPosterModel(
-              ownerID: FirebaseAuthService.user?.uid ?? "",
-              applicantIDs: [],
-              job: job,
-            ).toJson(),
-          );
+      JobPosterModel jobPost = JobPosterModel(
+        ownerID: FirebaseAuthService.user?.uid ?? "",
+        applicantIDs: [],
+        job: job,
+      );
+      await _instance.collection(_jobCollectionKey).add(jobPost.toJson());
+      return jobPost;
     } catch (e) {
       rethrow;
     }

@@ -53,7 +53,30 @@ class HomeProvider extends ChangeNotifier {
   }
 
   Future<void> postJob(JobModel job) async {
-    await FirestoreService.createNewJobPost(job);
+    JobPosterModel newPost = await FirestoreService.createNewJobPost(job);
+    posts.add(newPost);
+    _resetControllers();
+    notifyListeners();
+  }
+
+  Future<void> _initPosts() async {
+    try {
+      posts = await FirestoreService.getPostedJobs();
+    } catch (e) {
+      posts = [];
+    }
+  }
+
+  void _resetControllers() {
+    jobDescController.text = "";
+    jobNameController.text = "";
+    jobRateController.text = "";
+  }
+
+  void _initControllers() {
+    jobDescController = TextEditingController();
+    jobNameController = TextEditingController();
+    jobRateController = TextEditingController();
   }
 
   Future<void> init() async {
@@ -61,9 +84,18 @@ class HomeProvider extends ChangeNotifier {
     isLoading = true;
     isJobFullTime = true;
     dialogFormKey = GlobalKey();
-    await Future.wait([_getUser()]);
+    _initControllers();
+    await Future.wait([_getUser(), _initPosts()]);
     isLoading = false;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    jobNameController.dispose();
+    jobDescController.dispose();
+    jobRateController.dispose();
   }
 
   void onTabChange(int newTab) {

@@ -22,7 +22,7 @@ class JobModel {
     data['rate'] = rate;
     data['jobName'] = jobName;
     data['jobDesc'] = jobDesc;
-    data['rate'] = rate;
+    data['isFullTime'] = isFullTime;
     return data;
   }
 }

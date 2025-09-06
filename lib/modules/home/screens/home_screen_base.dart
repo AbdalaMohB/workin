@@ -15,7 +15,7 @@ class HomeScreenBase extends StatelessWidget {
       return Center(child: CircularProgressIndicator());
     }
     if (provider.currentTab == 0) {
-      return HomeScreenJobPosts();
+      return HomeScreenJobPosts(jobPosters: provider.posts);
     }
     return unfinishedMessage("Everything");
   }
