@@ -4,7 +4,9 @@ import 'package:workin/core/services/firestore_service.dart';
 import 'package:workin/models/developer_model.dart';
 import 'package:workin/models/job_model.dart';
 import 'package:workin/models/job_poster_model.dart';
+import 'package:workin/models/job_profile_model.dart';
 import 'package:workin/models/task_container.dart';
+import 'package:workin/models/task_model.dart';
 import 'package:workin/modules/home/components/job_post_dialog.dart';
 import 'package:workin/modules/home/components/task_dialog.dart';
 
@@ -19,17 +21,26 @@ class HomeProvider extends ChangeNotifier {
   late TextEditingController jobRateController;
   String? rate;
 
+  String selectedEmployee = "";
+
   late List<TaskContainer> tasks;
-  late List<DeveloperModel> employees;
+  late List<JobProfileModel> employees;
   late GlobalKey<FormState> taskFormKey;
 
   Future<void> _getEmployees() async {
-    employees = await FirestoreService.getDevsById(
-      (await FirestoreService.getManagerProfile())
-          .managedEmployeeIDsWithJobs
-          .keys
-          .toList(),
+    employees = [];
+    final managedEmployees = await FirestoreService.getManagerProfile();
+    final devs = await FirestoreService.getDevsById(
+      (managedEmployees).managedEmployeeIDsWithJobs.keys.toList(),
     );
+    for (var i = 0; i < devs.length; i++) {
+      employees.add(
+        JobProfileModel(
+          job: managedEmployees.managedEmployeeIDsWithJobs[devs[i].devID]!,
+          employee: devs[i],
+        ),
+      );
+    }
     return;
   }
 
@@ -44,12 +55,28 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> createNewTask() async {
+    TaskModel newTask = TaskModel(
+      ownerID: FirebaseAuthService.user?.uid ?? "Invalid User",
+      developerID: selectedEmployee,
+      name: jobNameController.text,
+      desc: jobDescController.text,
+    );
+    await FirestoreService.createNewTask(newTask);
+    DeveloperModel employee =
+        await FirestoreService.getEmplById(selectedEmployee) ??
+        DeveloperModel.dummy();
+    tasks.add(TaskContainer(task: newTask, dev: employee));
+    notifyListeners();
+  }
+
   void toggleFullTime(bool? val) {
     isJobFullTime = val ?? false;
     notifyListeners();
   }
 
   void showDialog(BuildContext context) {
+    _resetControllers();
     if (currentTab == 0) {
       showJobDialog(context);
     } else {
@@ -156,8 +183,8 @@ class HomeProvider extends ChangeNotifier {
     isJobFullTime = true;
     dialogFormKey = GlobalKey();
     taskFormKey = GlobalKey();
-    _initControllers();
     await Future.wait([_getUser(), _initPosts(), _getTasks(), _getEmployees()]);
+    _initControllers();
     isLoading = false;
     notifyListeners();
   }

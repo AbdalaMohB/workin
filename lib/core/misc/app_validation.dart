@@ -44,6 +44,13 @@ abstract class AppValidation {
     return null;
   }
 
+  static String? validateTaskName(String? name) {
+    if (name == null || name.trim().isEmpty) {
+      return "Task Name is Required";
+    }
+    return null;
+  }
+
   static String? validateCompanyName(String? name) {
     if (name == null || name.trim().isEmpty) {
       return "Company Name is Required";

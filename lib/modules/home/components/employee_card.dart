@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workin/core/services/size_service.dart';
 import 'package:workin/models/developer_model.dart';
+import 'package:workin/models/job_model.dart';
 import 'package:workin/modules/home/enums/employee_tabs.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
 import 'package:workin/shared/components/custom_spacer.dart';
@@ -9,6 +10,7 @@ import 'package:workin/shared/resources/app_text_styles.dart';
 
 class EmployeeCard extends StatefulWidget {
   final DeveloperModel employee;
+  final JobModel? job;
   late EmployeeTabs currentTab;
   late void Function(String id) onApply;
   EmployeeCard._internal({
@@ -16,6 +18,7 @@ class EmployeeCard extends StatefulWidget {
     required this.employee,
     required this.onApply,
     required this.currentTab,
+    required this.job,
   });
   EmployeeCard({
     Key? key,
@@ -26,16 +29,19 @@ class EmployeeCard extends StatefulWidget {
          employee: employee,
          onApply: onApply,
          currentTab: EmployeeTabs.hiring,
+         job: null,
        );
   EmployeeCard.employeeTab({
     Key? key,
     required DeveloperModel employee,
     required void Function(String v) onApply,
+    required JobModel job,
   }) : this._internal(
          key: key,
          employee: employee,
          onApply: onApply,
          currentTab: EmployeeTabs.employee,
+         job: job,
        );
   EmployeeCard.taskTab({
     Key? key,
@@ -46,6 +52,7 @@ class EmployeeCard extends StatefulWidget {
          employee: employee,
          onApply: onApply,
          currentTab: EmployeeTabs.task,
+         job: null,
        );
 
   @override
@@ -123,6 +130,11 @@ class _EmployeeCardState extends State<EmployeeCard> {
                   ),
                 ),
                 Text("Position: ${widget.employee.job}", style: _details),
+                if (widget.job != null)
+                  Text(
+                    "Pay: \$${widget.job!.rate}/${widget.job!.isFullTime ? "M" : "H"}",
+                    style: _details,
+                  ),
                 Text(
                   "Years of Experience: ${widget.employee.yearsOfExperience}",
                   style: _details,

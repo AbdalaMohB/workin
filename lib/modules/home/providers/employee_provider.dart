@@ -21,6 +21,7 @@ class EmployeeProvider extends ChangeNotifier {
   ) async {
     await FirestoreService.acceptCandidateDeveloper(developerID, jobID);
     employees.removeAt(index);
+    notifyListeners();
   }
 
   Future<void> init(List<String> IDs) async {

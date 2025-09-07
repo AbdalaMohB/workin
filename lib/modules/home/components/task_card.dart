@@ -37,7 +37,7 @@ class _TaskCardState extends State<TaskCard> {
                 Row(
                   //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(backgroundColor: AppColors.primaryFg),
+                    Icon(Icons.work, color: AppColors.primaryFg),
                     customSpacer(horizontalSpace: 15),
                     Text(widget.task.name, style: AppTextStyles.header),
                   ],

@@ -56,7 +56,7 @@ abstract class FirestoreService {
           .doc(userId)
           .get();
       final DeveloperModel user = DeveloperModel.fromJson(response.data()!);
-      user.devID = response.reference.path.split("/").last;
+      user.devID = userId;
       return user;
     } catch (e) {
       rethrow;
@@ -139,9 +139,8 @@ abstract class FirestoreService {
   static Future<List<DeveloperModel>> getDevsById(List<String> IDs) async {
     final List<DeveloperModel> users = [];
     for (String id in IDs) {
-      UserModel dev =
-          await getEmplById(id) ?? UserModel(name: "", isOwner: false);
-      users.add(DeveloperModel.fromJson(dev.toJson()));
+      DeveloperModel dev = await getEmplById(id) ?? DeveloperModel.dummy();
+      users.add(dev);
     }
 
     return users;

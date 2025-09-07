@@ -12,7 +12,7 @@ import 'package:workin/shared/resources/app_colors.dart';
 class HomeScreenBase extends StatelessWidget {
   const HomeScreenBase({super.key});
 
-  Widget _body(HomeProvider provider) {
+  Widget _body(BuildContext context, HomeProvider provider) {
     if (provider.isLoading) {
       return Center(child: CircularProgressIndicator());
     }
@@ -27,7 +27,13 @@ class HomeScreenBase extends StatelessWidget {
       return HomeScreenTasks(containers: provider.tasks);
     }
 
-    return EmployeesScreen(employees: provider.employees);
+    return EmployeesScreen(
+      employees: provider.employees,
+      onApply: (id) {
+        provider.selectedEmployee = id;
+        provider.showDialog(context);
+      },
+    );
   }
 
   Widget? _fab(BuildContext context, HomeProvider provider) {
@@ -61,7 +67,7 @@ class HomeScreenBase extends StatelessWidget {
           floatingActionButton: _fab(cont, provider),
 
           appBar: getCustomAppBar(trailing: provider.rate ?? ""),
-          body: _body(provider),
+          body: _body(cont, provider),
         );
       },
     );
