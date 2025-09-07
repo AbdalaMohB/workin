@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:workin/core/services/firebase_auth_service.dart';
 import 'package:workin/modules/home/components/custom_navbar.dart';
 import 'package:workin/modules/home/providers/home_provider.dart';
+import 'package:workin/modules/home/screens/employees_screen.dart';
 import 'package:workin/modules/home/screens/home_screen_job_posts.dart';
+import 'package:workin/modules/home/screens/home_screen_tasks.dart';
 import 'package:workin/shared/components/unifinished_message.dart';
 import 'package:workin/shared/resources/app_colors.dart';
 
@@ -21,12 +23,16 @@ class HomeScreenBase extends StatelessWidget {
         onUnapply: provider.cancelJob,
       );
     }
-    return unfinishedMessage("Everything");
+    if (provider.currentTab == 1) {
+      return HomeScreenTasks(containers: provider.tasks);
+    }
+
+    return EmployeesScreen(employees: provider.employees);
   }
 
   Widget? _fab(BuildContext context, HomeProvider provider) {
     if (FirebaseAuthService.currentUser?.isOwner ?? false) {
-      return provider.currentTab < 2
+      return provider.currentTab == 0
           ? FloatingActionButton(
               onPressed: () {
                 provider.showDialog(context);

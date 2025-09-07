@@ -4,6 +4,7 @@ import 'package:workin/models/developer_model.dart';
 import 'package:workin/models/job_model.dart';
 import 'package:workin/models/job_poster_model.dart';
 import 'package:workin/models/manager_model.dart';
+import 'package:workin/models/task_container.dart';
 import 'package:workin/models/task_model.dart';
 import 'package:workin/models/user_model.dart';
 
@@ -55,6 +56,7 @@ abstract class FirestoreService {
           .doc(userId)
           .get();
       final DeveloperModel user = DeveloperModel.fromJson(response.data()!);
+      user.devID = response.reference.path.split("/").last;
       return user;
     } catch (e) {
       rethrow;
@@ -82,7 +84,30 @@ abstract class FirestoreService {
     }).toList();
   }
 
-  static Future<List<TaskModel>> getTasksByUserId({
+  static Future<ManagerModel> getManagerProfile() async {
+    final response = await _instance
+        .collection(_managerCollectionKey)
+        .doc(FirebaseAuthService.user?.uid ?? "Invalid")
+        .get();
+    return ManagerModel.fromJson(
+      response.data() ?? {"managedEmployeeIDsWithJob": {}},
+    );
+  }
+
+  static Future<List<TaskContainer>> _getTaskContainers(
+    List<TaskModel> tasks,
+  ) async {
+    List<TaskContainer> containers = [];
+    for (TaskModel task in tasks) {
+      final dev = await getEmplById(task.developerID);
+      containers.add(
+        TaskContainer(dev: dev ?? DeveloperModel.dummy(), task: task),
+      );
+    }
+    return containers;
+  }
+
+  static Future<List<TaskContainer>> getTasksByUserId({
     required bool isOwner,
   }) async {
     final String id = isOwner ? "ownerID" : "developerID";
@@ -90,10 +115,11 @@ abstract class FirestoreService {
         .collection(_taskCollectionKey)
         .where(id, isEqualTo: FirebaseAuthService.user?.uid ?? "")
         .get();
+
     final List<TaskModel> tasks = response.docs.map((task) {
       return TaskModel.fromJson(task.data());
     }).toList();
-    return tasks;
+    return await _getTaskContainers(tasks);
   }
 
   static Future<List<DeveloperModel>> getEmployedDevelopers() async {

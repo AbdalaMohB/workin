@@ -8,6 +8,6 @@ abstract class AppColors {
   static const fadedFg = Color(0x991c9bfe);
   static const secondaryFg = Colors.white;
   static const splash = Colors.white30;
-  static const secondaryText = Colors.white70;
+  static const secondaryText = Color(0xFFDDDDDD);
   static const trietaryFg = Color(0xFF00bdff);
 }

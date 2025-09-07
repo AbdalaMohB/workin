@@ -4,6 +4,10 @@ class DeveloperModel extends UserModel {
   late String job;
   late int yearsOfExperience;
   late String? cv;
+  late String devID;
+
+  DeveloperModel.dummy()
+    : this._internal(name: "___", job: "___", yearsOfExperience: 0, cv: "___");
 
   DeveloperModel._internal({
     required super.name,

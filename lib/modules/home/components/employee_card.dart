@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workin/core/services/size_service.dart';
 import 'package:workin/models/developer_model.dart';
+import 'package:workin/modules/home/enums/employee_tabs.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
 import 'package:workin/shared/components/custom_spacer.dart';
 import 'package:workin/shared/resources/app_colors.dart';
@@ -8,15 +9,44 @@ import 'package:workin/shared/resources/app_text_styles.dart';
 
 class EmployeeCard extends StatefulWidget {
   final DeveloperModel employee;
-  late bool _isEmployeesTab;
-  late Future<void> Function() onApply;
-  EmployeeCard({super.key, required this.employee, required this.onApply}) {
-    _isEmployeesTab = false;
-  }
-  EmployeeCard.employeeTab({super.key, required this.employee}) {
-    _isEmployeesTab = true;
-    onApply = () async {};
-  }
+  late EmployeeTabs currentTab;
+  late void Function(String id) onApply;
+  EmployeeCard._internal({
+    super.key,
+    required this.employee,
+    required this.onApply,
+    required this.currentTab,
+  });
+  EmployeeCard({
+    Key? key,
+    required DeveloperModel employee,
+    required void Function(String value) onApply,
+  }) : this._internal(
+         key: key,
+         employee: employee,
+         onApply: onApply,
+         currentTab: EmployeeTabs.hiring,
+       );
+  EmployeeCard.employeeTab({
+    Key? key,
+    required DeveloperModel employee,
+    required void Function(String v) onApply,
+  }) : this._internal(
+         key: key,
+         employee: employee,
+         onApply: onApply,
+         currentTab: EmployeeTabs.employee,
+       );
+  EmployeeCard.taskTab({
+    Key? key,
+    required DeveloperModel employee,
+    required void Function(String value) onApply,
+  }) : this._internal(
+         key: key,
+         employee: employee,
+         onApply: onApply,
+         currentTab: EmployeeTabs.task,
+       );
 
   @override
   State<StatefulWidget> createState() {
@@ -25,9 +55,29 @@ class EmployeeCard extends StatefulWidget {
 }
 
 class _EmployeeCardState extends State<EmployeeCard> {
+  late TextStyle _details;
+  late TextStyle _name;
   @override
   void initState() {
     super.initState();
+    switch (widget.currentTab) {
+      case EmployeeTabs.employee:
+        _name = TextStyle(color: AppColors.primaryFg, fontSize: 18);
+        _details = TextStyle(
+          color: AppColors.secondaryText,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        );
+        break;
+      case EmployeeTabs.hiring:
+        _name = AppTextStyles.headerNoHighlight;
+        _details = AppTextStyles.highlighted;
+        break;
+      case EmployeeTabs.task:
+        _name = AppTextStyles.header;
+        _details = AppTextStyles.highlighted;
+        break;
+    }
   }
 
   @override
@@ -51,15 +101,19 @@ class _EmployeeCardState extends State<EmployeeCard> {
                   children: [
                     CircleAvatar(backgroundColor: AppColors.primaryFg),
                     customSpacer(horizontalSpace: 15),
-                    Text(widget.employee.name, style: AppTextStyles.header),
+                    Text(widget.employee.name, style: _name),
                     Spacer(),
-                    if (!widget._isEmployeesTab)
-                      IconButton(
-                        onPressed: () async {
-                          widget.onApply();
-                        },
-                        icon: Icon(Icons.thumb_up, color: AppColors.primaryFg),
+                    IconButton(
+                      onPressed: () async {
+                        widget.onApply(widget.employee.devID);
+                      },
+                      icon: Icon(
+                        widget.currentTab != EmployeeTabs.employee
+                            ? Icons.thumb_up
+                            : Icons.add,
+                        color: AppColors.primaryFg,
                       ),
+                    ),
                   ],
                 ),
                 customSpacer(
@@ -68,12 +122,13 @@ class _EmployeeCardState extends State<EmployeeCard> {
                     percentage: 0.02,
                   ),
                 ),
-                Text(widget.employee.job, style: AppTextStyles.normal),
+                Text("Position: ${widget.employee.job}", style: _details),
                 Text(
                   "Years of Experience: ${widget.employee.yearsOfExperience}",
-                  style: AppTextStyles.normal,
+                  style: _details,
                 ),
-                Text(widget.employee.cv ?? "", style: AppTextStyles.normal),
+                if (widget.currentTab == EmployeeTabs.hiring)
+                  Text(widget.employee.cv ?? "", style: _details),
               ],
             ),
           ),

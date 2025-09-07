@@ -22,7 +22,7 @@ class EmployeePickerScreen extends StatelessWidget {
       items.add(
         EmployeeCard(
           employee: dev,
-          onApply: () async {
+          onApply: (v) async {
             await provider.acceptApplicant(applicantIDs[index], jobID, index);
             Navigator.pop(context);
           },

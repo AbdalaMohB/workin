@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:workin/core/services/firebase_auth_service.dart';
 import 'package:workin/core/services/firestore_service.dart';
+import 'package:workin/models/developer_model.dart';
 import 'package:workin/models/job_model.dart';
 import 'package:workin/models/job_poster_model.dart';
+import 'package:workin/models/task_container.dart';
 import 'package:workin/modules/home/components/job_post_dialog.dart';
+import 'package:workin/modules/home/components/task_dialog.dart';
 
 class HomeProvider extends ChangeNotifier {
   late int currentTab;
@@ -16,12 +19,71 @@ class HomeProvider extends ChangeNotifier {
   late TextEditingController jobRateController;
   String? rate;
 
+  late List<TaskContainer> tasks;
+  late List<DeveloperModel> employees;
+  late GlobalKey<FormState> taskFormKey;
+
+  Future<void> _getEmployees() async {
+    employees = await FirestoreService.getDevsById(
+      (await FirestoreService.getManagerProfile())
+          .managedEmployeeIDsWithJobs
+          .keys
+          .toList(),
+    );
+    return;
+  }
+
+  Future<void> _getTasks() async {
+    try {
+      tasks = await FirestoreService.getTasksByUserId(
+        isOwner: FirebaseAuthService.currentUser?.isOwner ?? false,
+      );
+    } catch (e) {
+      tasks = [];
+      rethrow;
+    }
+  }
+
   void toggleFullTime(bool? val) {
     isJobFullTime = val ?? false;
     notifyListeners();
   }
 
   void showDialog(BuildContext context) {
+    if (currentTab == 0) {
+      showJobDialog(context);
+    } else {
+      showTaskDialog(context);
+    }
+  }
+
+  void showTaskDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      transitionBuilder: (c, a1, a2, widget) {
+        const begin = Offset(1, 0);
+        const end = Offset.zero;
+        const curve = Curves.easeOutCubic;
+        final tween = Tween(begin: begin, end: end);
+        final curvedAnimation = CurvedAnimation(parent: a1, curve: curve);
+        return SlideTransition(
+          position: tween.animate(curvedAnimation),
+          child: Opacity(
+            opacity: a1.value,
+            child: getTaskDialog(context: c),
+          ),
+        );
+      },
+      barrierDismissible: true,
+      barrierLabel: "",
+      transitionDuration: Duration(milliseconds: 900),
+      pageBuilder: (c, a1, a2) {
+        return Center();
+      },
+    );
+  }
+
+  void showJobDialog(BuildContext context) {
     showGeneralDialog(
       context: context,
       transitionBuilder: (c, a1, a2, widget) {
@@ -93,8 +155,9 @@ class HomeProvider extends ChangeNotifier {
     isLoading = true;
     isJobFullTime = true;
     dialogFormKey = GlobalKey();
+    taskFormKey = GlobalKey();
     _initControllers();
-    await Future.wait([_getUser(), _initPosts()]);
+    await Future.wait([_getUser(), _initPosts(), _getTasks(), _getEmployees()]);
     isLoading = false;
     notifyListeners();
   }
