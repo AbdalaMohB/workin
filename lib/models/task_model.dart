@@ -1,7 +1,16 @@
+import 'package:hive/hive.dart';
+
+part "task_model.g.dart";
+
+@HiveType(typeId: 1)
 class TaskModel {
+  @HiveField(0)
   late String name;
+  @HiveField(1)
   late String desc;
+  @HiveField(2)
   late String ownerID;
+  @HiveField(3)
   late String developerID;
   TaskModel({
     required this.ownerID,

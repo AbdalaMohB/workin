@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:workin/core/services/firebase_auth_service.dart';
 import 'package:workin/core/services/firestore_service.dart';
+import 'package:workin/core/services/hive_service.dart';
 import 'package:workin/models/developer_model.dart';
 import 'package:workin/models/job_model.dart';
 import 'package:workin/models/job_poster_model.dart';
 import 'package:workin/models/job_profile_model.dart';
 import 'package:workin/models/task_container.dart';
+import 'package:workin/models/task_local_model.dart';
 import 'package:workin/models/task_model.dart';
 import 'package:workin/modules/home/components/job_post_dialog.dart';
 import 'package:workin/modules/home/components/task_dialog.dart';
@@ -49,6 +51,13 @@ class HomeProvider extends ChangeNotifier {
       tasks = await FirestoreService.getTasksByUserId(
         isOwner: FirebaseAuthService.currentUser?.isOwner ?? false,
       );
+      if (!(FirebaseAuthService.currentUser?.isOwner ?? true)) {
+        await HiveService.instance.cacheTasks(
+          tasks.map((container) {
+            return TaskLocalModel.fromContainer(container);
+          }).toList(),
+        );
+      }
     } catch (e) {
       tasks = [];
       rethrow;
