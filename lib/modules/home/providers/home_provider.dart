@@ -51,6 +51,8 @@ class HomeProvider extends ChangeNotifier {
       tasks = await FirestoreService.getTasksByUserId(
         isOwner: FirebaseAuthService.currentUser?.isOwner ?? false,
       );
+      print("SON OF A BBBBB, $tasks");
+
       if (!(FirebaseAuthService.currentUser?.isOwner ?? true)) {
         await HiveService.instance.cacheTasks(
           tasks.map((container) {
@@ -76,6 +78,17 @@ class HomeProvider extends ChangeNotifier {
         await FirestoreService.getEmplById(selectedEmployee) ??
         DeveloperModel.dummy();
     tasks.add(TaskContainer(task: newTask, dev: employee));
+    HiveService.instance.addTask(
+      TaskLocalModel(task: newTask, assignee: employee.name),
+    );
+    notifyListeners();
+  }
+
+  Future<void> deleteTask(TaskModel task) async {
+    await FirestoreService.deleteTask(task);
+    tasks.removeWhere((cont) {
+      return task == cont.task;
+    });
     notifyListeners();
   }
 
@@ -192,8 +205,9 @@ class HomeProvider extends ChangeNotifier {
     isJobFullTime = true;
     dialogFormKey = GlobalKey();
     taskFormKey = GlobalKey();
-    await Future.wait([_getUser(), _initPosts(), _getTasks(), _getEmployees()]);
+    await Future.wait([_getUser(), _initPosts(), _getEmployees()]);
     _initControllers();
+    await _getTasks();
     isLoading = false;
     notifyListeners();
   }

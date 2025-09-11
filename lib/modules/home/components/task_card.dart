@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:workin/core/services/firebase_auth_service.dart';
+import 'package:workin/core/services/network_service.dart';
 import 'package:workin/core/services/size_service.dart';
 import 'package:workin/models/task_model.dart';
 import 'package:workin/shared/components/auto_expanded.dart';
@@ -9,7 +11,13 @@ import 'package:workin/shared/resources/app_text_styles.dart';
 class TaskCard extends StatefulWidget {
   final TaskModel task;
   final String assigneeName;
-  const TaskCard({super.key, required this.task, required this.assigneeName});
+  final void Function(TaskModel t) onDelete;
+  const TaskCard({
+    super.key,
+    required this.task,
+    required this.assigneeName,
+    required this.onDelete,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -40,6 +48,15 @@ class _TaskCardState extends State<TaskCard> {
                     Icon(Icons.work, color: AppColors.primaryFg),
                     customSpacer(horizontalSpace: 15),
                     Text(widget.task.name, style: AppTextStyles.header),
+                    Spacer(),
+                    if (NetworkService.instance.isConnected &&
+                        (FirebaseAuthService.currentUser?.isOwner ?? false))
+                      IconButton(
+                        onPressed: () {
+                          widget.onDelete(widget.task);
+                        },
+                        icon: Icon(Icons.delete, color: AppColors.primaryFg),
+                      ),
                   ],
                 ),
                 customSpacer(

@@ -34,4 +34,18 @@ class TaskModel {
     data['developerID'] = developerID;
     return data;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is TaskModel) {
+      return ((ownerID == other.ownerID) &&
+          (developerID == other.developerID) &&
+          (desc == other.desc) &&
+          (name == other.name));
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => Object.hash(developerID, ownerID, name, desc);
 }

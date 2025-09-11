@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:workin/models/developer_model.dart';
+import 'package:provider/provider.dart';
 import 'package:workin/models/task_container.dart';
-import 'package:workin/models/task_model.dart';
 import 'package:workin/modules/home/components/task_card.dart';
+import 'package:workin/modules/home/providers/home_provider.dart';
 import 'package:workin/shared/resources/app_text_styles.dart';
 
 class HomeScreenTasks extends StatelessWidget {
@@ -16,6 +16,7 @@ class HomeScreenTasks extends StatelessWidget {
       TaskCard card = TaskCard(
         task: containers[i].task,
         assigneeName: containers[i].dev.name,
+        onDelete: context.read<HomeProvider>().deleteTask,
       );
       cards.add(card);
     }

@@ -194,6 +194,27 @@ abstract class FirestoreService {
     }
   }
 
+  static Future<void> deleteTask(TaskModel task) async {
+    try {
+      final response = await _instance
+          .collection(_taskCollectionKey)
+          .where("ownerID", isEqualTo: task.ownerID)
+          .where("developerID", isEqualTo: task.developerID)
+          .where("name", isEqualTo: task.name)
+          .where("desc", isEqualTo: task.desc)
+          .get();
+      final docs = response.docs;
+      for (QueryDocumentSnapshot<Map<String, dynamic>> snapshot in docs) {
+        await _instance
+            .collection(_taskCollectionKey)
+            .doc(snapshot.reference.path.split("/").last)
+            .delete();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<Map<bool, double>> getCurrentRate() async {
     try {
       final response = await _instance

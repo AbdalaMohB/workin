@@ -22,6 +22,7 @@ class HiveService {
   }
 
   Future<void> cacheTasks(List<TaskLocalModel> tasks) async {
+    await _box.clear();
     for (TaskLocalModel task in tasks) {
       if (!(_box.values.contains(task))) {
         await _box.add(task);
