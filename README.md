@@ -1,5 +1,5 @@
 # Workin
-Job Discovery Platform in Flutter
+Job Discovery Platform in Flutter and Firebase
 
 <img width="433" height="896" alt="workin4" src="https://github.com/user-attachments/assets/238f6c27-f54d-4636-adee-16e25781835a" />
 <img width="431" height="904" alt="workin1" src="https://github.com/user-attachments/assets/a13311d8-2144-411e-a8c9-f67a11b9f752" />
